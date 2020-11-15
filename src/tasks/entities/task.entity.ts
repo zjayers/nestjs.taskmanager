@@ -1,4 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { User } from '../../auth/entities/user.entity';
 import { TaskStatus } from '../enums/task-status.enum';
 
 @Entity()
@@ -15,10 +23,19 @@ export class Task extends BaseEntity {
   @Column({ type: 'enum', enum: TaskStatus })
   status: TaskStatus;
 
-  constructor(title, description) {
+  @Exclude()
+  @ManyToOne(() => User, (user) => user.tasks, { eager: false })
+  user: User;
+
+  @Exclude()
+  @Column()
+  userId: number;
+
+  constructor(title, description, user) {
     super();
     this.title = title;
     this.description = description;
+    this.user = user;
     this.status = TaskStatus.OPEN;
   }
 }

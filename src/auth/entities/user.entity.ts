@@ -2,9 +2,11 @@ import {
   BaseEntity,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
+import { Task } from '../../tasks/entities/task.entity';
 
 @Entity()
 @Unique(['username'])
@@ -15,13 +17,13 @@ export class User extends BaseEntity {
   username: string;
   @Column()
   password: string;
-  @Column()
-  salt: string;
 
-  constructor(username: string, password: string, salt: string) {
+  @OneToMany(() => Task, (task) => task.user, { eager: true })
+  tasks: Task[];
+
+  constructor(username: string, password: string) {
     super();
     this.username = username;
     this.password = password;
-    this.salt = salt;
   }
 }
